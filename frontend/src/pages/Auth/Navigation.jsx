@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 import "../Auth/Navigation.css"
 import { useSelector, useDispatch } from 'react-redux'
-import { useLoginMutation } from '../../redux/Api/userApiSlice' 
+import { useLogoutMutation } from '../../redux/Api/userApiSlice' 
 import { logout } from '../../redux/feature/auth/authSlice'
 
 const Navigation = () => {
@@ -27,13 +27,13 @@ const Navigation = () => {
   const dispatch = useDispatch();
   const Navigate = useNavigate();
 
-  const [logoutApiCall] = useLoginMutation()
+  const [logoutApiCall] = useLogoutMutation()
 
   const logoutHandler = async () => {
     try {
       await logoutApiCall().unwrap()
       dispatch(logout())
-      navigator("/login")
+      Navigate("/login")
     } catch (error) {
       console.log(error);
     }
@@ -61,9 +61,9 @@ const Navigation = () => {
           <span className="hidden nav-item-name mt-[3rem]">FAVARITE</span>
         </Link>
       </div>
-      <div className="realtive">
+      <div className="relative">
         <button onClick={toggleDropdown} className='flex items-center text-gray-8000 focus:outline-none'>
-          {userInfo ? <span className='text-white '>{userInfo,username} </span> : (<></>)}
+          {userInfo ? <span className='text-white '>{userInfo.userName} </span> : (<></>)}
         </button>
       </div>
       <ul>
