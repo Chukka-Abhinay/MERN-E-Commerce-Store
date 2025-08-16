@@ -10,7 +10,10 @@ const createUser =  asyncHandler(async (req,res) => {
     }
 
     const userExists = await user.findOne({email});
-    if(userExists) res.status(400).send("email already in use !");
+    if(userExists){
+         res.status(400).send("email already in use !");
+         return;
+    }
     
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -42,6 +45,7 @@ const loginUser = asyncHandler(async (req,res) => {
             return ;
         }
     }
+    res.status(401).json({ message: "Invalid email or password" });
 });
 
 const logoutCurrentUser = asyncHandler(async (req,res) => {
