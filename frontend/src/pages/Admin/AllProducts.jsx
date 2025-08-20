@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import moment from "moment";
-import { useAllProductsQuery } from "../../redux/api/productApiSlice.js";
+import { useAllProductsQuery } from "../../redux/api/productApiSlice";
 import AdminMenu from "./AdminMenu";
 
 const AllProducts = () => {
@@ -17,15 +17,18 @@ const AllProducts = () => {
   return (
     <>
       <div className="container mx-[9rem]">
-        <div className="flex flex-col md:flex-row">
+        <div className="flex flex-col  md:flex-row">
           <div className="p-3">
             <div className="ml-[2rem] text-xl font-bold h-12">
               All Products ({products.length})
             </div>
             <div className="flex flex-wrap justify-around items-center">
               {products.map((product) => (
-                // ✅ CHANGED: Outer <Link> is now a <div>
-                <div key={product._id} className="block mb-4 overflow-hidden">
+                <Link
+                  key={product._id}
+                  to={`/admin/product/update/${product._id}`}
+                  className="block mb-4 overflow-hidden"
+                >
                   <div className="flex">
                     <img
                       src={product.image}
@@ -37,6 +40,7 @@ const AllProducts = () => {
                         <h5 className="text-xl font-semibold mb-2">
                           {product?.name}
                         </h5>
+
                         <p className="text-gray-400 text-xs">
                           {moment(product.createdAt).format("MMMM Do YYYY")}
                         </p>
@@ -47,8 +51,7 @@ const AllProducts = () => {
                       </p>
 
                       <div className="flex justify-between">
-                        {/* ✅ This Link is no longer nested */}
-                        <Link
+                        <div
                           to={`/admin/product/update/${product._id}`}
                           className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-pink-700 rounded-lg hover:bg-pink-800 focus:ring-4 focus:outline-none focus:ring-pink-300 dark:bg-pink-600 dark:hover:bg-pink-700 dark:focus:ring-pink-800"
                         >
@@ -68,12 +71,12 @@ const AllProducts = () => {
                               d="M1 5h12m0 0L9 1m4 4L9 9"
                             />
                           </svg>
-                        </Link>
+                        </div>
                         <p>$ {product?.price}</p>
                       </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>

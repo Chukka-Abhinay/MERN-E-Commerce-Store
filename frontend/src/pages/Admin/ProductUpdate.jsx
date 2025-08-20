@@ -10,23 +10,19 @@ import {
 import { useFetchCategoriesQuery } from "../../redux/api/categoryApiSlice";
 import { toast } from "react-toastify";
 
-const AdminProductUpdate = () => {
+const ProductUpdate = () => {
   const params = useParams();
 
   const { data: productData } = useGetProductByIdQuery(params._id);
 
-  console.log(productData);
-
   const [image, setImage] = useState(productData?.image || "");
   const [name, setName] = useState(productData?.name || "");
-  const [description, setDescription] = useState(
-    productData?.description || ""
-  );
-  const [price, setPrice] = useState(productData?.price || "");
+  const [description, setDescription] = useState(productData?.description || "");
+  const [price, setPrice] = useState(productData?.price || 0);
   const [category, setCategory] = useState(productData?.category || "");
-  const [quantity, setQuantity] = useState(productData?.quantity || "");
+  const [quantity, setQuantity] = useState(productData?.quantity || 0);
   const [brand, setBrand] = useState(productData?.brand || "");
-  const [stock, setStock] = useState(productData?.countInStock);
+  const [stock, setStock] = useState(productData?.countInStock || 0);
 
   // hook
   const navigate = useNavigate();
@@ -35,11 +31,7 @@ const AdminProductUpdate = () => {
   const { data: categories = [] } = useFetchCategoriesQuery();
 
   const [uploadProductImage] = useUploadProductImageMutation();
-
-  // Define the update product mutation
   const [updateProduct] = useUpdateProductMutation();
-
-  // Define the delete product mutation
   const [deleteProduct] = useDeleteProductMutation();
 
   useEffect(() => {
@@ -47,9 +39,8 @@ const AdminProductUpdate = () => {
       setName(productData.name);
       setDescription(productData.description);
       setPrice(productData.price);
-      setCategory(productData.category?._id);
+      setCategory(productData.category?._id || "");
       setQuantity(productData.quantity);
-      setImage(productData.image);
       setBrand(productData.brand);
       setImage(productData.image);
       setStock(productData.countInStock);
@@ -59,22 +50,12 @@ const AdminProductUpdate = () => {
   const uploadFileHandler = async (e) => {
     const formData = new FormData();
     formData.append("image", e.target.files[0]);
-    const file = e.target.files[0];
     try {
       const res = await uploadProductImage(formData).unwrap();
-      toast.success("Item added successfully", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 2000,
-      });
-      if(file){
-        setImage(file);
-        setImageUrl(URL.createObjectURL(file));
-      }
+      toast.success("Image uploaded successfully");
+      setImage(res.image);
     } catch (err) {
-      toast.success("Item added successfully", {
-        position: toast.POSITION.TOP_RIGHT,
-        autoClose: 2000,
-      });
+      toast.error("Image upload failed. Try again.");
     }
   };
 
@@ -91,27 +72,20 @@ const AdminProductUpdate = () => {
       formData.append("brand", brand);
       formData.append("countInStock", stock);
 
-      // Update product using the RTK Query mutation
-      const data = await updateProduct({ productId: params._id, formData });
+      const { data } = await updateProduct({
+        productId: params._id,
+        formData,
+      });
 
       if (data?.error) {
-        toast.error(data.error, {
-          position: "top-right",
-          autoClose: 2000,
-        });
+        toast.error(data.error);
       } else {
-        toast.success(`Product successfully updated`, {
-          position: "top-right",
-          autoClose: 2000,
-        });
+        toast.success(`Product successfully updated`);
         navigate("/admin/allproductslist");
       }
     } catch (err) {
       console.log(err);
-      toast.error("Product update failed. Try again.", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+      toast.error("Product update failed. Try again.");
     }
   };
 
@@ -123,23 +97,17 @@ const AdminProductUpdate = () => {
       if (!answer) return;
 
       const { data } = await deleteProduct(params._id);
-      toast.success(`"${data.name}" is deleted`, {
-        position: "top-right",
-        autoClose: 2000,
-      });
+      toast.success(`"${data.name}" is deleted`);
       navigate("/admin/allproductslist");
     } catch (err) {
       console.log(err);
-      toast.error("Delete failed. Try again.", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+      toast.error("Delete failed. Try again.");
     }
   };
 
   return (
     <>
-      <div className="container  xl:mx-[9rem] sm:mx-[0]">
+      <div className="container xl:mx-[9rem] sm:mx-[0]">
         <div className="flex flex-col md:flex-row">
           <AdminMenu />
           <div className="md:w-3/4 p-3">
@@ -156,14 +124,14 @@ const AdminProductUpdate = () => {
             )}
 
             <div className="mb-3">
-              <label className="text-white  py-2 px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
-                {image ? image.name : "Upload image"}
+              <label className="border text-white px-4 block w-full text-center rounded-lg cursor-pointer font-bold py-11">
+                {image ? "Change Image" : "Upload Image"}
                 <input
                   type="file"
                   name="image"
                   accept="image/*"
                   onChange={uploadFileHandler}
-                  className="text-white"
+                  className="hidden"
                 />
               </label>
             </div>
@@ -181,10 +149,10 @@ const AdminProductUpdate = () => {
                 </div>
 
                 <div className="two">
-                  <label htmlFor="name block">Price</label> <br />
+                  <label htmlFor="price">Price</label> <br />
                   <input
                     type="number"
-                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white "
+                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
                     value={price}
                     onChange={(e) => setPrice(e.target.value)}
                   />
@@ -193,7 +161,7 @@ const AdminProductUpdate = () => {
 
               <div className="flex flex-wrap">
                 <div>
-                  <label htmlFor="name block">Quantity</label> <br />
+                  <label htmlFor="quantity">Quantity</label> <br />
                   <input
                     type="number"
                     min="1"
@@ -203,42 +171,43 @@ const AdminProductUpdate = () => {
                   />
                 </div>
                 <div>
-                  <label htmlFor="name block">Brand</label> <br />
+                  <label htmlFor="brand">Brand</label> <br />
                   <input
                     type="text"
-                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white "
+                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
                     value={brand}
                     onChange={(e) => setBrand(e.target.value)}
                   />
                 </div>
               </div>
 
-              <label htmlFor="" className="my-5">
+              <label htmlFor="description" className="my-5">
                 Description
               </label>
               <textarea
                 type="text"
-                className="p-2 mb-3 bg-[#101011]  border rounded-lg w-[95%] text-white"
+                className="p-2 mb-3 bg-[#101011] border rounded-lg w-[95%] text-white"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               />
 
               <div className="flex justify-between">
                 <div>
-                  <label htmlFor="name block">Count In Stock</label> <br />
+                  <label htmlFor="stock">Count In Stock</label> <br />
                   <input
-                    type="text"
-                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white "
+                    type="number"
+                    className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white"
                     value={stock}
                     onChange={(e) => setStock(e.target.value)}
                   />
                 </div>
 
                 <div>
-                  <label htmlFor="">Category</label> <br />
+                  <label htmlFor="category">Category</label> <br />
                   <select
                     placeholder="Choose Category"
                     className="p-4 mb-3 w-[30rem] border rounded-lg bg-[#101011] text-white mr-[5rem]"
+                    value={category}
                     onChange={(e) => setCategory(e.target.value)}
                   >
                     {categories?.map((c) => (
@@ -253,13 +222,13 @@ const AdminProductUpdate = () => {
               <div className="">
                 <button
                   onClick={handleSubmit}
-                  className="py-4 px-10 mt-5 rounded-lg text-lg font-bold  bg-green-600 mr-6"
+                  className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-green-600 mr-6"
                 >
                   Update
                 </button>
                 <button
                   onClick={handleDelete}
-                  className="py-4 px-10 mt-5 rounded-lg text-lg font-bold  bg-pink-600"
+                  className="py-4 px-10 mt-5 rounded-lg text-lg font-bold bg-pink-600"
                 >
                   Delete
                 </button>
@@ -272,4 +241,4 @@ const AdminProductUpdate = () => {
   );
 };
 
-export default AdminProductUpdate;
+export default ProductUpdate;
