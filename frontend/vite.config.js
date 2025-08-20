@@ -7,9 +7,18 @@ export default defineConfig({
   plugins: [react(),
     tailwindcss(),
   ],
-  server:{
-    proxy:{
-      "/api/" : "http://localhost:5000",
+  server: {
+    proxy: {
+      // This rule handles your API calls
+      '/api': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
+      // ✅ ADD THIS RULE to handle image requests
+      '/uploads': {
+        target: 'http://localhost:5000',
+        changeOrigin: true,
+      },
     }
   }
 })

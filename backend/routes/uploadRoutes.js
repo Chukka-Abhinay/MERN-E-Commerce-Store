@@ -40,7 +40,8 @@ router.post("/", (req, res) => {
     } else if (req.file) {
       res.status(200).send({
         message: "Image uploaded successfully",
-        image: `/${req.file.path}`,
+        // This is the only change you need to make
+        image: `/${req.file.path}`.replace(/\\/g, "/"),
       });
     } else {
       res.status(400).send({ message: "No image file provided" });

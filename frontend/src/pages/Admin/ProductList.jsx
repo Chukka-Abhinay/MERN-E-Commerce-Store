@@ -20,6 +20,8 @@ const ProductList = () => {
   const [imageUrl, setImageUrl] = useState(null);
   const navigate = useNavigate();
 
+  console.log("Current Image URL:", imageUrl);
+
   const [uploadProductImage] = useUploadProductImageMutation();
   const [createProduct] = useCreateProductMutation();
   const { data: categories } = useFetchCategoriesQuery();
@@ -27,9 +29,14 @@ const ProductList = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!imageUrl) {
+    toast.error("Please upload an image first.");
+    return;
+  }
+
     try {
       const productData = new FormData();
-      productData.append("image", image);
+      productData.append("image", imageUrl);
       productData.append("name", name);
       productData.append("description", description);
       productData.append("price", price);
@@ -52,19 +59,26 @@ const ProductList = () => {
     }
   };
 
+  // After 👍
   const uploadFileHandler = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Set the raw file object to the 'image' state
+    setImage(file);
+
     const formData = new FormData();
-    formData.append("image", e.target.files[0]);
+    formData.append("image", file);
 
     try {
       const res = await uploadProductImage(formData).unwrap();
-      toast.success(res.message);
-      setImage(res.image);
+      // Set the returned URL to the 'imageUrl' state for preview and submission
       setImageUrl(res.image);
+      toast.success(res.message);
     } catch (error) {
       toast.error(error?.data?.message || error.error);
     }
-  };
+  };  
 
   return (
     <div className="container xl:mx-[9rem] sm:mx-[0]">
