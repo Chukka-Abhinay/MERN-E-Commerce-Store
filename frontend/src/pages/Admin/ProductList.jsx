@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {
   useCreateProductMutation,
   useUploadProductImageMutation,
-} from "../../redux/api/productApiSlice";
+} from "../../redux/Api/productApiSlice";
 import { useFetchCategoriesQuery } from "../../redux/Api/categoryApiSlice";
 import { toast } from "react-toastify";
 import AdminMenu from "./AdminMenu";

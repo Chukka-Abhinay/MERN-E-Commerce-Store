@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useGetFilteredProductsQuery } from "../redux/api/productApiSlice";
+import { useGetFilteredProductsQuery } from "../redux/Api/productApiSlice";
 import { useFetchCategoriesQuery } from "../redux/Api/categoryApiSlice";
 
 import {

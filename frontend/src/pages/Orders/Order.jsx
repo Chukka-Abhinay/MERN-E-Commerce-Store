@@ -10,7 +10,7 @@ import {
   useGetOrderDetailsQuery,
   useGetPaypalClientIdQuery,
   usePayOrderMutation,
-} from "../../redux/api/orderApiSlice";
+} from "../../redux/Api/orderApiSlice";
 
 const Order = () => {
   const { id: orderId } = useParams();
