@@ -25,21 +25,21 @@ app.use(express.urlencoded({extended: true}));
 app.use(cookieParser());
 
 // Add the CORS configuration here
-const frontendURL = 'https://mern-e-commerce-store-black.vercel.app';
+const frontendURL = '*';
 app.use(cors({ origin: frontendURL,
     credentials: true
  }));
 
 
 app.use((req, res, next) => {
-  if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
-    // First, check if req.body is undefined or null
-    if (!req.body || Object.keys(req.body).length === 0) {
-      // If the body is missing or empty, explicitly set it to an empty object
-      req.body = {};
-    }
-  }
-  next();
+  if (req.method === 'POST' || req.method === 'PUT' || req.method === 'PATCH') {
+    // First, check if req.body is undefined or null
+    if (!req.body || Object.keys(req.body).length === 0) {
+      // If the body is missing or empty, explicitly set it to an empty object
+      req.body = {};
+    }
+  }
+  next();
 });
 
 app.use("/api/users", userRoutes)
