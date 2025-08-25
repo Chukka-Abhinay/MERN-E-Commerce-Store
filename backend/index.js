@@ -26,7 +26,9 @@ app.use(cookieParser());
 
 // Add the CORS configuration here
 const frontendURL = 'https://mern-e-commerce-store-black.vercel.app';
-app.use(cors({ origin: frontendURL }));
+app.use(cors({ origin: frontendURL,
+    credentials: true
+ }));
 
 
 app.use((req, res, next) => {
