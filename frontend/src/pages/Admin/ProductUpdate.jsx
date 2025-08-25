@@ -62,19 +62,20 @@ const ProductUpdate = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const formData = new FormData();
-      formData.append("image", image);
-      formData.append("name", name);
-      formData.append("description", description);
-      formData.append("price", price);
-      formData.append("category", category);
-      formData.append("quantity", quantity);
-      formData.append("brand", brand);
-      formData.append("countInStock", stock);
+      const updatedProductData = {
+        image, // The image URL from the state
+        name,
+        description,
+        price,
+        category,
+        quantity,
+        brand,
+        countInStock: stock,
+      };
 
       const { data } = await updateProduct({
         productId: params._id,
-        formData,
+        formData: updatedProductData, // The object, not FormData
       });
 
       if (data?.error) {

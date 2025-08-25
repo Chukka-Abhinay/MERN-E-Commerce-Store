@@ -27,37 +27,39 @@ const ProductList = () => {
   const { data: categories } = useFetchCategoriesQuery();
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+   e.preventDefault();
 
-    if (!imageUrl) {
-    toast.error("Please upload an image first.");
-    return;
-  }
+   if (!imageUrl) {
+     toast.error("Please upload an image first.");
+     return;
+   }
 
-    try {
-      const productData = new FormData();
-      productData.append("image", imageUrl);
-      productData.append("name", name);
-      productData.append("description", description);
-      productData.append("price", price);
-      productData.append("category", category);
-      productData.append("quantity", quantity);
-      productData.append("brand", brand);
-      productData.append("countInStock", stock);
+   try {
+      // Create a standard JavaScript object
+     const productData = {
+       image: imageUrl, // Pass the image URL directly here
+       name,
+       description,
+       price,
+       category,
+       quantity,
+       brand,
+       countInStock: stock
+     };
 
-      const { data } = await createProduct(productData);
+     const { data } = await createProduct(productData);
 
-      if (data.error) {
-        toast.error("Product create failed. Try Again.");
-      } else {
-        toast.success(`${data.name} is created`);
-        navigate("/");
-      }
-    } catch (error) {
-      console.error(error);
-      toast.error("Product create failed. Try Again.");
-    }
-  };
+     if (data.error) {
+       toast.error("Product create failed. Try Again.");
+     } else {
+       toast.success(`${data.name} is created`);
+       navigate("/");
+     }
+   } catch (error) {
+     console.error(error);
+     toast.error("Product create failed. Try Again.");
+   }
+ };
 
   // After 👍
   const uploadFileHandler = async (e) => {
