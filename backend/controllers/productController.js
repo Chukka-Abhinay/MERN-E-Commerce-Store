@@ -32,6 +32,9 @@ const addProduct = asyncHandler(async (req, res) => {
 
 const updateProductDetails = asyncHandler(async (req, res) => {
   try {
+    console.log("--- UPDATE PRODUCT ---");
+    console.log("Product ID:", req.params.id);
+    console.log("Received data (req.body):", req.body);
     const { name, description, price, category, quantity, brand } = req.body;
 
     // Validation
@@ -57,6 +60,8 @@ const updateProductDetails = asyncHandler(async (req, res) => {
       { ...req.body },
       { new: true }
     );
+
+    console.log("Updated product from DB:", product);
 
     await product.save();
 
