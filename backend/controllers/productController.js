@@ -3,6 +3,9 @@ import Product from "../models/productModel.js";
 
 const addProduct = asyncHandler(async (req, res) => {
   try {
+    console.log("--- CREATE PRODUCT ---");
+    console.log("Received data (req.body):", req.body);
+    
     const { name, description, price, category, quantity, brand } = req.body;
 
     // Validation
